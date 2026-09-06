@@ -1,70 +1,15 @@
 ---
 import Base from "../layouts/Base.astro";
-import { SITE } from "../lib/site.js";
+import { SITE, TOOLS, COLUMNS } from "../lib/site.js";
+const tools = TOOLS;
+const columns = COLUMNS;
 
-const tools = [
-  {
-    href: "/shukujitsu/",
-    name: "祝日カレンダー",
-    desc: "次の祝日まであと何日？年ごとの祝日一覧と連休が一目でわかる早見表。",
-  },
-  {
-    href: "/rokuyo/",
-    name: "六曜カレンダー（大安・仏滅）",
-    desc: "今日の六曜は？日付から大安・仏滅を調べて、次の大安までの残り日数も一覧表示。",
-  },
-  {
-    href: "/eigyobi/",
-    name: "営業日計算",
-    desc: "「3営業日後はいつ？」を土日祝を除いて計算。期間内の営業日数も数えられます。",
-  },
-  {
-    href: "/shijukunichi/",
-    name: "四十九日・法要日の計算",
-    desc: "命日から初七日・四十九日・一周忌〜三十三回忌までの日程を一覧表示します。",
-  },
-  {
-    href: "/seigo/",
-    name: "生後日数・お祝い日の計算",
-    desc: "今日で生後何日・何か月？お七夜・お宮参り・百日祝いの日付も自動計算。",
-  },
-  {
-    href: "/cooling-off/",
-    name: "クーリングオフ期限の計算",
-    desc: "書面の受領日と取引の種類から、クーリングオフの期限日を計算します。",
-  },
-  {
-    href: "/kinenbi/",
-    name: "記念日カウンター",
-    desc: "付き合って今日で何日目？100日・1000日・◯周年の節目も一覧表示。",
-  },
-  {
-    href: "/nyugaku/",
-    name: "入学・卒業年の計算（学歴早見表）",
-    desc: "生年月日から小学校〜大学の入学・卒業年を西暦・和暦で一覧。履歴書の学歴欄に。",
-  },
-];
-
-const columns = [
-  { href: "/column/shonichi/", name: "「初日を含める・含めない」— 日数の数え方の基本" },
-  { href: "/column/shukujitsu/", name: "祝日はどうやって決まる？振替休日と国民の休日のしくみ" },
-  { href: "/column/rokuyo/", name: "六曜とは？大安・仏滅・友引の意味と、気にしなくてよい場面" },
-  { href: "/column/ichiryumanbai/", name: "一粒万倍日・天赦日とは？六曜との違いと、日の決まり方" },
-  { href: "/column/nyuseki/", name: "入籍日はどう決める？大安・一粒万倍日と、六曜より大事なこと" },
-  { href: "/column/meinichi/", name: "祥月命日と月命日の違い — 年忌法要の「回忌」の数え方" },
-  { href: "/column/kodengaeshi/", name: "香典返しはいつ送る？忌明けの数え方と当日返し" },
-  { href: "/column/cooling-off-kigen/", name: "クーリングオフの期限の数え方 — 8日目が日曜日でも延びない？" },
-  { href: "/column/eigyobi-inai/", name: "「3営業日以内」はいつまで？営業日の数え方と見落としやすい休業日" },
-  { href: "/column/hayaumare/", name: "4月1日生まれはなぜ早生まれ？「誕生日前日に年を取る」しくみ" },
-  { href: "/column/wareki-seireki/", name: "令和・平成・昭和と西暦の変換 — 履歴書で間違えないための早見と覚え方" },
-  { href: "/column/okuizome/", name: "お宮参り・お食い初めはいつ？生後日数の数え方と行事カレンダー" },
-  { href: "/column/uruudoshi/", name: "うるう年のしくみ — 2月29日生まれの誕生日と年齢はどうなる？" },
-];
 
 const jsonLd = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: SITE.name,
+  url: Astro.site ? Astro.site.href : undefined,
   description: SITE.description,
 });
 ---
@@ -105,10 +50,11 @@ const jsonLd = JSON.stringify({
       ))
     }
   </ul>
+  <p class="small"><a href="/column/">コラム一覧（テーマ別）を見る →</a></p>
 
   <h2>{SITE.name}について</h2>
   <p>
-    {SITE.name}は、個人が運営する日付計算の専門サイトです。計算ロジックは自動テストで検証し、記事は公的機関の一次情報を確認して執筆しています。各ページには執筆者・公開日・更新日と参考資料を明記しています。詳しくは<a href="/about/">運営者情報</a>をご覧ください。誤りのご指摘・ツールのご要望は<a href="/contact/">お問い合わせ</a>からお寄せください。
+    {SITE.name}は、個人が運営する日付計算の専門サイトです。計算ロジックは自動テストで検証し、記事は公的機関の一次情報を確認して執筆しています。各ページには執筆者・公開日・更新日を、法令や公的データに基づく記事には参考資料を明記しています。詳しくは<a href="/about/">運営者情報</a>をご覧ください。誤りのご指摘・ツールのご要望は<a href="/contact/">お問い合わせ</a>からお寄せください。
   </p>
 
   <script type="application/ld+json" is:inline set:html={jsonLd} />

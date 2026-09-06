@@ -1,5 +1,6 @@
 ---
 import ColumnLayout from "../../layouts/ColumnLayout.astro";
+import { REFS } from "../../lib/site.js";
 import DayCountFigure from "../../components/DayCountFigure.astro";
 
 const keyPoints = [
@@ -28,7 +29,7 @@ const faqs = [
   },
 ];
 
-const sources = [];
+const sources = [REFS.boshiHokenHo];
 
 const related = [
   { href: "/seigo/", label: "生後日数・お祝い日の計算 — 誕生日を入れるとお七夜〜初誕生まで一覧表示" },
@@ -64,7 +65,7 @@ const related = [
     なぜ誕生日を1日目と数えるのでしょうか。年齢の数え方に「数え年」があるように、日本の伝統的な数え方では、生まれた時点で「1」から始まります。生まれた日をすでに「この世で過ごした1日目」と考えるためで、四十九日などの法要で命日を1日目と数えるのと同じ発想です。法律上の期間計算（初日不算入）とは逆なので、契約の期限などに慣れている人ほど間違えやすいところです。
   </p>
   <p class="small">
-    なお、母子手帳や健診で使う「生後◯日」（日齢）は誕生日を0日と数える方式で、行事の数え方と1日ずれます。混同しやすいので注意してください。
+    なお、母子手帳や健診で使う「生後◯日」（日齢）は誕生日を0日と数える方式で、行事の数え方と1日ずれます。母子保健法でも「出生後28日を経過しない乳児」を新生児と定義しており、行政や医療の場面はこの0日起点が基本です。混同しやすいので注意してください。
   </p>
 
   <h2>「日齢」と「◯日目」の対応</h2>
@@ -84,7 +85,7 @@ const related = [
   <table class="milestones">
     <tr><th>行事</th><th>時期</th><th>内容</th></tr>
     <tr><td>お七夜（命名式）</td><td class="date-cell">生後7日目</td><td>名前を披露し、命名書を飾る</td></tr>
-    <tr><td>お宮参り</td><td class="date-cell">生後1か月ごろ</td><td>氏神様に誕生を報告。伝統的には男児31〜32日目・女児32〜33日目（地域差あり）</td></tr>
+    <tr><td>お宮参り</td><td class="date-cell">生後1か月ごろ</td><td>氏神様に誕生を報告。一般には男児31日目・女児32日目（地域や家により32〜33日目とする場合も）</td></tr>
     <tr><td>お食い初め（百日祝い）</td><td class="date-cell">生後100日目</td><td>「一生食べ物に困らないように」と祝い膳を食べさせる真似をする。110日目・120日目に行う地域も</td></tr>
     <tr><td>ハーフバースデー</td><td class="date-cell">生後6か月</td><td>近年定着した記念日。写真撮影が定番</td></tr>
     <tr><td>初節句</td><td class="date-cell">最初の3月3日／5月5日</td><td>生後まもない場合は翌年に回すことも多い</td></tr>

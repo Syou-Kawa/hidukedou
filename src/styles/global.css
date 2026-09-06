@@ -51,6 +51,26 @@ body {
 }
 .site-name:hover { color: var(--ai); }
 .site-tagline { color: var(--muted); font-size: 0.82rem; letter-spacing: 0.05em; }
+.site-nav { margin-left: auto; display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; }
+.site-nav a { color: var(--ink); text-decoration: none; padding: 0.15rem 0; border-bottom: 1px solid transparent; }
+.site-nav a:hover { color: var(--ai); border-bottom-color: var(--ai); }
+
+/* ---------- パンくず ---------- */
+.breadcrumb { font-size: 0.8rem; color: var(--muted); margin: -0.6rem 0 1.2rem; }
+.breadcrumb ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.2rem 0; }
+.breadcrumb li + li::before { content: "›"; margin: 0 0.45rem; color: var(--line); }
+.breadcrumb a { color: var(--muted); }
+.breadcrumb span { color: var(--ink-soft); }
+
+/* ---------- コラム一覧 ---------- */
+.column-group { margin-top: 1.4rem; }
+.column-group-desc { color: var(--muted); font-size: 0.9rem; margin-top: -0.3rem; }
+.column-list { list-style: none; padding: 0; margin: 0.8rem 0 0; display: grid; gap: 0.6rem; }
+.column-list a { display: block; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 0.8rem 1rem; text-decoration: none; color: var(--ink); }
+.column-list a:hover { border-color: var(--ai); }
+.column-list .col-name { font-weight: 600; color: var(--ai); }
+.column-list .col-desc { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 0.15rem; }
+.column-list .col-date { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
 
 main { padding: 2.2rem 0 3.5rem; }
 
@@ -370,6 +390,14 @@ a:focus-visible, summary:focus-visible {
 
 /* ---------- レスポンシブ ---------- */
 @media (max-width: 640px) {
+  /* 幅の広い表はページをはみ出さず、表の中だけ横スクロールさせる */
+  .milestones { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .milestones tbody { display: table; min-width: 100%; }
+  .milestones th, .milestones td { min-width: 5.5em; }
+  .figure { padding: 0.7rem 0.6rem 0.5rem; }
+  .figure-svg { min-width: 22rem; }
+  .site-header .wrap { gap: 0.4rem 0.9rem; }
+  .site-nav { margin-left: 0; flex-basis: 100%; gap: 0.9rem; font-size: 0.82rem; }
   /* 入力欄・ボタンを縦積みにして全幅に */
   .calc .row > div { flex: 1 1 100%; }
   .calc .row > .btn { flex: 1 1 100%; }

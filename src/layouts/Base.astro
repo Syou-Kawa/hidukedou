@@ -2,7 +2,8 @@
 import "../styles/global.css";
 import { SITE } from "../lib/site.js";
 
-const { title, description, ogType = "website" } = Astro.props;
+const { title, description, ogType = "website", noindex = false } = Astro.props;
+const ogImage = Astro.site ? new URL("/og-default.png", Astro.site).href : "/og-default.png";
 const pageTitle = title ? `${title}｜${SITE.name}` : `${SITE.name}｜${SITE.tagline}`;
 const desc = description ?? SITE.description;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
@@ -18,10 +19,13 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>{pageTitle}</title>
     <meta name="description" content={desc} />
-    {canonical && <link rel="canonical" href={canonical} />}
+    {noindex ? <meta name="robots" content="noindex" /> : canonical && <link rel="canonical" href={canonical} />}
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={desc} />
     <meta property="og:type" content={ogType} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:locale" content="ja_JP" />
     <meta name="theme-color" content="#2b5876" />
@@ -54,6 +58,12 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
       <div class="wrap">
         <a class="site-name" href="/">{SITE.name}</a>
         <span class="site-tagline">{SITE.tagline}</span>
+        <nav class="site-nav" aria-label="サイト内">
+          <a href="/">ツール</a>
+          <a href="/column/">コラム</a>
+          <a href="/about/">運営者情報</a>
+          <a href="/contact/">お問い合わせ</a>
+        </nav>
       </div>
     </header>
     <main>
@@ -64,7 +74,8 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
     <footer class="site-footer">
       <div class="wrap">
         <nav>
-          <a href="/">ツール一覧</a>
+          <a href="/">ホーム（ツール一覧）</a>
+          <a href="/column/">コラム一覧</a>
           <a href="/about/">運営者情報</a>
           <a href="/privacy/">プライバシーポリシー</a>
           <a href="/contact/">お問い合わせ</a>

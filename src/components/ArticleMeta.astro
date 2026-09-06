@@ -12,7 +12,7 @@ const showUpdated = updated && updated !== published;
 ---
 
 <p class="article-meta">
-  <span>執筆: <a href={SITE.author.url}>{SITE.author.name}</a></span>
+  <span>執筆: <a href={SITE.author.url}>{SITE.author.name}</a>（{SITE.author.title}）</span>
   {published && <span>公開: <time datetime={published}>{fmt(published)}</time></span>}
   {showUpdated && <span>更新: <time datetime={updated}>{fmt(updated)}</time></span>}
 </p>

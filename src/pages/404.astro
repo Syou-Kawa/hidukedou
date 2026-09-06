@@ -1,0 +1,24 @@
+---
+import Base from "../layouts/Base.astro";
+import { SITE, TOOLS, COLUMNS } from "../lib/site.js";
+---
+
+<Base noindex={true} title="ページが見つかりません" description={`お探しのページは${SITE.name}に存在しないか、移動した可能性があります。`}>
+  <article>
+    <h1>ページが見つかりません</h1>
+    <p class="lead">お探しのページは存在しないか、URL が変わった可能性があります。以下から目的のページをお探しください。</p>
+    <h2>計算ツール</h2>
+    <ul>
+      {TOOLS.map((t) => (
+        <li><a href={t.href}>{t.name}</a> — {t.desc}</li>
+      ))}
+    </ul>
+    <h2>コラム</h2>
+    <ul>
+      {COLUMNS.map((c) => (
+        <li><a href={c.href}>{c.name}</a></li>
+      ))}
+    </ul>
+    <p><a href="/">トップページへ戻る</a>／<a href="/column/">コラム一覧へ</a></p>
+  </article>
+</Base>

@@ -1,0 +1,31 @@
+---
+// パンくずリスト（表示 + BreadcrumbList 構造化データ）
+// props: items = [{ name, href }] … ホームは自動で先頭に付く。最後の要素は現在ページ（リンクなし）
+import { SITE } from "../lib/site.js";
+const { items = [] } = Astro.props;
+const all = [{ name: "ホーム", href: "/" }, ...items];
+const abs = (h) => (Astro.site ? new URL(h, Astro.site).href : h);
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: all.map((it, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: it.name,
+    ...(it.href ? { item: abs(it.href) } : {}),
+  })),
+});
+---
+
+<nav class="breadcrumb" aria-label="現在位置">
+  <ol>
+    {
+      all.map((it, i) => (
+        <li>
+          {i < all.length - 1 && it.href ? <a href={it.href}>{it.name}</a> : <span aria-current="page">{it.name}</span>}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+<script type="application/ld+json" is:inline set:html={jsonLd} />

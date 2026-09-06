@@ -11,6 +11,7 @@
 import Base from "./Base.astro";
 import ArticleMeta from "../components/ArticleMeta.astro";
 import Sources from "../components/Sources.astro";
+import Breadcrumb from "../components/Breadcrumb.astro";
 import { SITE } from "../lib/site.js";
 
 const {
@@ -38,10 +39,12 @@ const articleJsonLd = JSON.stringify({
   ...(updated ? { dateModified: updated } : {}),
   ...(canonical ? { mainEntityOfPage: canonical } : {}),
   inLanguage: "ja",
+  image: Astro.site ? new URL("/og-default.png", Astro.site).href : "/og-default.png",
   author: { "@type": "Person", name: SITE.author.name, url: Astro.site ? new URL(SITE.author.url, Astro.site).href : SITE.author.url },
   publisher: { "@type": "Organization", name: SITE.name },
 });
 
+const absLinks = (html) => (Astro.site ? html.replace(/href='\//g, `href='${Astro.site.origin}/`).replace(/href="\//g, `href="${Astro.site.origin}/`) : html);
 const faqJsonLd =
   faqs.length > 0
     ? JSON.stringify({
@@ -50,13 +53,14 @@ const faqJsonLd =
         mainEntity: faqs.map((f) => ({
           "@type": "Question",
           name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: f.a },
+          acceptedAnswer: { "@type": "Answer", text: absLinks(f.a) },
         })),
       })
     : null;
 ---
 
 <Base title={title} description={description} ogType="article">
+  <Breadcrumb items={[{ name: "コラム", href: "/column/" }, { name: heading }]} />
   <article>
     <h1>{heading}</h1>
     {lead && <p class="lead">{lead}</p>}

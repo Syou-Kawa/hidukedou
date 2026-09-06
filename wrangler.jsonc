@@ -3,7 +3,9 @@
   "name": "hidukedou",
   "compatibility_date": "2026-07-05",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    // 存在しないURLには dist/404.html を 404 ステータスで返す
+    "not_found_handling": "404-page"
   },
   // カスタムドメイン。deploy時に自動でDNSレコードとSSL証明書が設定される
   "routes": [

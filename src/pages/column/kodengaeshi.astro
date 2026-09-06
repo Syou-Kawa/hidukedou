@@ -1,6 +1,5 @@
 ---
 import ColumnLayout from "../../layouts/ColumnLayout.astro";
-import DayCountFigure from "../../components/DayCountFigure.astro";
 
 const keyPoints = [
   "伝統的な香典返しは<strong>忌明け（四十九日）後、1か月以内</strong>を目安に挨拶状を添えて送る",
@@ -58,12 +57,9 @@ const related = [
   <p>
     忌明けの日は、<strong>命日を1日目として数えて49日目</strong>です。日付の計算上は「命日＋48日」で、たとえば7月1日が命日なら8月18日が四十九日にあたります。「49日後」と考えて命日＋49日にしてしまうと1日ずれるので注意してください。
   </p>
-  <DayCountFigure
-    startLabel="命日"
-    days={7}
-    mode="include"
-    caption="法要の日数は命日を1日目として数える（初日算入）。図は7日目（初七日）までの例で、四十九日も同じ数え方で命日＋48日になる。"
-  />
+  <p>
+    命日を1日目とする数え方の図解は<a href="/column/shonichi/">コラム「初日を含める・含めない」</a>にあり、命日を入力するだけで忌明けの日付と直前の土日を表示する<a href="/shijukunichi/">四十九日・法要日の計算ツール</a>も用意しています。
+  </p>
   <table class="milestones">
     <tr><th>命日</th><th>四十九日（命日＋48日）</th><th>五十日祭（命日＋49日）</th><th>1か月後</th></tr>
     <tr><td>7月1日</td><td class="date-cell">8月18日</td><td class="date-cell">8月19日</td><td class="date-cell">8月1日</td></tr>

@@ -1,9 +1,11 @@
 ---
 import Base from "../layouts/Base.astro";
 import { SITE } from "../lib/site.js";
+import Breadcrumb from "../components/Breadcrumb.astro";
 ---
 
-<Base title="プライバシーポリシー" description={`${SITE.name}のプライバシーポリシーです。`}>
+<Base title="プライバシーポリシー" description={`${SITE.name}のプライバシーポリシー。入力データの取り扱い、Google AdSense の広告 Cookie とオプトアウト方法、Google アナリティクスによるアクセス解析、免責事項について説明します。`}>
+  <Breadcrumb items={[{ name: "プライバシーポリシー" }]} />
   <article>
     <h1>プライバシーポリシー</h1>
     <p class="small">制定日: 2026年7月5日　最終更新日: 2026年9月6日</p>
@@ -22,13 +24,13 @@ import { SITE } from "../lib/site.js";
     </p>
     <ul>
       <li>Google は広告 Cookie を使用することにより、ユーザーが当サイトや他のサイトにアクセスした際の情報に基づいて、適切な広告を表示します。</li>
-      <li>ユーザーは、<a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google の広告設定</a>でパーソナライズ広告を無効にできます。また、<a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">www.aboutads.info</a> にアクセスすれば、パーソナライズ広告に使われる第三者配信事業者の Cookie を無効にできます。</li>
+      <li>ユーザーは、<a href="https://adssettings.google.com/authenticated?hl=ja" target="_blank" rel="noopener noreferrer">Google の広告設定</a>でパーソナライズ広告を無効にできます。また、<a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">www.aboutads.info</a> にアクセスすれば、パーソナライズ広告に使われる第三者配信事業者の Cookie を無効にできます。</li>
       <li>Google の広告における データの取り扱いについては、<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener noreferrer">Google のポリシーと規約「広告」</a>をご確認ください。</li>
     </ul>
 
     <h2>アクセス解析について</h2>
     <p>
-      当サイトは、サイトの改善のためにアクセス解析ツール「Google アナリティクス」を利用しています。Google アナリティクスはトラフィックデータの収集のために Cookie を使用しますが、このデータは匿名で収集されており、個人を特定するものではありません。この機能は、お使いのブラウザで Cookie を無効にすることで収集を拒否できます。詳しくは <a href="https://marketingplatform.google.com/about/analytics/terms/jp/" target="_blank" rel="noopener noreferrer">Google アナリティクス利用規約</a>および <a href="https://policies.google.com/privacy?hl=ja" target="_blank" rel="noopener noreferrer">Google のプライバシーポリシー</a>をご確認ください。
+      当サイトは、サイトの改善のためにアクセス解析ツール「Google アナリティクス」を利用しています。Google アナリティクスはトラフィックデータの収集のために Cookie を使用しますが、このデータは個人を特定しない形で収集されます。収集を望まない場合は、お使いのブラウザで Cookie を無効にするか、<a href="https://tools.google.com/dlpage/gaoptout?hl=ja" target="_blank" rel="noopener noreferrer">Google アナリティクス オプトアウト アドオン</a>をご利用ください。詳しくは <a href="https://marketingplatform.google.com/about/analytics/terms/jp/" target="_blank" rel="noopener noreferrer">Google アナリティクス利用規約</a>および <a href="https://policies.google.com/privacy?hl=ja" target="_blank" rel="noopener noreferrer">Google のプライバシーポリシー</a>をご確認ください。
     </p>
 
     <h2>お問い合わせで取得する情報</h2>

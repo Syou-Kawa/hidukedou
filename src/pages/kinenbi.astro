@@ -3,7 +3,7 @@ import ToolLayout from "../layouts/ToolLayout.astro";
 import DayCountFigure from "../components/DayCountFigure.astro";
 import { REFS } from "../lib/site.js";
 
-const sources = [];
+const sources = [REFS.minpo];
 
 const faqs = [
   {
@@ -36,14 +36,14 @@ const keyPoints = [
 
 const related = [
   { href: "/seigo/", label: "生後日数計算 — 赤ちゃんの日数・お祝い行事はこちら" },
-  { href: "/column/nyuseki/", label: "コラム: 入籍日はどう決める？大安・一粒万倍日と記念日の選び方" },
+  { href: "/column/nyuseki/", label: "コラム: 入籍日はどう決める？大安・一粒万倍日と、六曜より大事なこと" },
   { href: "/column/uruudoshi/", label: "コラム: うるう年のしくみ — 周年と日数のずれの理由" },
   { href: "/column/shonichi/", label: "コラム: 「初日を含める・含めない」日数の数え方の基本" },
 ];
 ---
 
 <ToolLayout
-  title="記念日カウンター — 付き合って今日で何日？100日・1000日記念日を計算"
+  title="記念日カウンター — 付き合って今日で何日？100日・1000日を計算"
   description="付き合った日・結婚した日・推しに出会った日から、今日で何日目かを計算。100日・365日・1000日・◯周年などの節目の日付も一覧表示。結果はURLでシェアできます。"
   h1="記念日カウンター"
   lead="はじまりの日を入力すると、今日で何日目かと、100日目・1000日目・◯周年などの節目の日付を計算します。"
@@ -85,7 +85,7 @@ const related = [
       startLabel="はじまりの日"
       days={7}
       mode="both"
-      caption="同じ1週間後でも、はじまりの日を1日目と数えれば「8日目」、経過日数で数えれば「7日」。記念日は上の段（はじまりの日＝1日目）で数えるのが一般的です。"
+      caption="はじまりの日を1日目と数えた「7日目」は開始日＋6日、経過日数の「7日後」は開始日＋7日。同じ7でも指す日が1日ずれます。記念日は上の段（はじまりの日＝1日目）で数えるのが一般的です。"
       highlight={7}
     />
 
@@ -127,27 +127,17 @@ const related = [
       <tr><td>1000日目</td><td class="date-cell">約2年9か月後</td><td>3年目の少し手前に来る大きな節目</td></tr>
       <tr><td>10000日目</td><td class="date-cell">約27年4か月後</td><td>銀婚式を過ぎた頃。夫婦の記念に</td></tr>
     </table>
-    <h2>結婚記念日には名前があります</h2>
-    <p>結婚記念日は年数ごとに呼び名があり、名前にちなんだ贈り物をする習慣があります。</p>
+    <h2>結婚◯周年はいつ？ — 入籍日から周年を求める</h2>
+    <p>
+      「◯周年」は日数ではなく<strong>暦の上で同じ月日を迎える日</strong>です。民法第143条も、週・月・年で定めた期間は暦に従って計算し、起算日に応当する日の前日に満了すると定めています。本ツールの周年の計算もこの考え方で、入籍日と同じ月日を「入籍年＋年数」の年に置いたものが◯周年です。結婚記念日には年数ごとの呼び名があるので、代表的なものを計算のポイントとあわせてまとめます。
+    </p>
     <table class="milestones">
-      <tr><th>年数</th><th>呼び名</th></tr>
-      <tr><td class="date-cell">1年</td><td>紙婚式</td></tr>
-      <tr><td class="date-cell">5年</td><td>木婚式</td></tr>
-      <tr><td class="date-cell">10年</td><td>錫婚式・アルミ婚式</td></tr>
-      <tr><td class="date-cell">15年</td><td>水晶婚式</td></tr>
-      <tr><td class="date-cell">20年</td><td>磁器婚式</td></tr>
-      <tr class="is-main"><td class="date-cell">25年</td><td>銀婚式</td></tr>
-      <tr><td class="date-cell">30年</td><td>真珠婚式</td></tr>
-      <tr><td class="date-cell">40年</td><td>ルビー婚式</td></tr>
-      <tr class="is-main"><td class="date-cell">50年</td><td>金婚式</td></tr>
-      <tr><td class="date-cell">60年</td><td>ダイヤモンド婚式</td></tr>
+      <tr><th>年数</th><th>呼び名</th><th>計算のポイント</th></tr>
+      <tr><td class="date-cell">1年</td><td>紙婚式</td><td>入籍日の翌年の同じ月日。365日目の翌日で、うるう年をまたぐと367日目になる</td></tr>
+      <tr><td class="date-cell">10年</td><td>錫婚式・アルミ婚式</td><td>本ツールの一覧に表示される最後の周年。入籍年＋10の同じ月日</td></tr>
+      <tr class="is-main"><td class="date-cell">25年</td><td>銀婚式</td><td>入籍年＋25。日数にすると約9,130日で、10000日目（約27年4か月）より手前</td></tr>
+      <tr class="is-main"><td class="date-cell">50年</td><td>金婚式</td><td>入籍年＋50。2月29日入籍の場合、うるう年に当たらない年は2月28日として扱う</td></tr>
     </table>
-    <p>
-      年月が経つほど硬く価値のあるものになっていくのは、夫婦の絆が強くなっていくことの表れとされています。本ツールで結婚した日を入力すれば、周年の日付を一覧で確認できます。
-    </p>
-    <p>
-      年数と品目の対応は資料によって多少の違いがあり、10年は「錫婚式」と「アルミ婚式」の両方が使われます。一般に広く知られているのは<strong>銀婚式（25年）と金婚式（50年）</strong>で、両親や祖父母のお祝いとして親族で集まることが多い節目です。
-    </p>
     <p>
       注意したいのは、<strong>結婚何年目かは「周年＋1」</strong>になることです。入籍した年が1年目、1周年を迎えた年が2年目です。たとえば2001年11月3日に入籍した夫婦は、2026年11月3日に銀婚式（25周年）を迎え、その年は結婚26年目にあたります。年齢が誕生日ごとに増える「満◯歳」と「◯年目」の関係と同じで、お祝いの品に年数を入れるときは周年のほうで確認しましょう。
     </p>

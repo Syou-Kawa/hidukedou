@@ -2,6 +2,8 @@
 import Base from "./Base.astro";
 import ArticleMeta from "../components/ArticleMeta.astro";
 import Sources from "../components/Sources.astro";
+import Breadcrumb from "../components/Breadcrumb.astro";
+import { SITE } from "../lib/site.js";
 
 // props:
 //   title / description : メタ用
@@ -24,6 +26,26 @@ const {
   sources = [],
 } = Astro.props;
 
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const absLinks = (html) => (Astro.site ? html.replace(/href='\//g, `href='${Astro.site.origin}/`).replace(/href="\//g, `href="${Astro.site.origin}/`) : html);
+const appJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: h1,
+  headline: title,
+  description,
+  url: canonical,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Any",
+  browserRequirements: "Requires JavaScript",
+  inLanguage: "ja",
+  isAccessibleForFree: true,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
+  ...(published ? { datePublished: published } : {}),
+  ...(updated ? { dateModified: updated } : {}),
+  author: { "@type": "Person", name: SITE.author.name, url: Astro.site ? new URL(SITE.author.url, Astro.site).href : SITE.author.url },
+  publisher: { "@type": "Organization", name: SITE.name },
+});
 const faqJsonLd =
   faqs.length > 0
     ? JSON.stringify({
@@ -32,13 +54,14 @@ const faqJsonLd =
         mainEntity: faqs.map((f) => ({
           "@type": "Question",
           name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: f.a },
+          acceptedAnswer: { "@type": "Answer", text: absLinks(f.a) },
         })),
       })
     : null;
 ---
 
 <Base title={title} description={description}>
+  <Breadcrumb items={[{ name: h1 }]} />
   <article>
     <h1>{h1}</h1>
     <p class="lead">{lead}</p>
@@ -95,5 +118,6 @@ const faqJsonLd =
     }
   </article>
 
+  <script type="application/ld+json" is:inline set:html={appJsonLd} />
   {faqJsonLd && <script type="application/ld+json" is:inline set:html={faqJsonLd} />}
 </Base>

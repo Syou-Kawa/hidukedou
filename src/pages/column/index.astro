@@ -1,0 +1,60 @@
+---
+import Base from "../../layouts/Base.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+import { SITE, COLUMNS, COLUMN_CATEGORIES, TOOLS } from "../../lib/site.js";
+
+const fmt = (iso) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${y}年${m}月${d}日`;
+};
+const groups = COLUMN_CATEGORIES.map((c) => ({ ...c, items: COLUMNS.filter((x) => x.category === c.id) }));
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "コラム一覧",
+  description: "日付の数え方に関するコラム記事の一覧。",
+  url: Astro.site ? new URL("/column/", Astro.site).href : "/column/",
+  hasPart: COLUMNS.map((c) => ({ "@type": "Article", headline: c.name, url: Astro.site ? new URL(c.href, Astro.site).href : c.href, datePublished: c.published, dateModified: c.updated })),
+});
+---
+
+<Base
+  title="コラム一覧 — 日付の数え方を知る"
+  description={`${SITE.name}のコラム一覧。「初日を含めるかどうか」の基本から、祝日・六曜・うるう年・和暦の換算、入籍・法要・赤ちゃんの行事まで、日付の数え方を${COLUMNS.length}本の記事で解説します。`}
+>
+  <Breadcrumb items={[{ name: "コラム" }]} />
+  <h1>コラム一覧 — 日付の数え方を知る</h1>
+  <p class="lead">
+    ツールが出した日付を「なぜその日になるのか」まで理解しておくと、案内状や手続きの場面で自信を持って使えます。テーマ別に{COLUMNS.length}本の記事を掲載しています。各記事には公開日・更新日を、法令や公的データに基づく記事には参考資料を明記しています。
+  </p>
+
+  {
+    groups.map((g) => (
+      <section class="column-group">
+        <h2>{g.name}</h2>
+        <p class="column-group-desc">{g.desc}</p>
+        <ul class="column-list">
+          {g.items.map((c) => (
+            <li>
+              <a href={c.href}>
+                <span class="col-name">{c.name}</span>
+                <span class="col-desc">{c.desc}</span>
+                <span class="col-date">公開 {fmt(c.published)}{c.updated !== c.published && ` ／ 更新 ${fmt(c.updated)}`}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+
+  <h2>あわせて使える計算ツール</h2>
+  <ul>
+    {TOOLS.map((t) => (
+      <li><a href={t.href}>{t.name}</a> — {t.desc}</li>
+    ))}
+  </ul>
+
+  <script type="application/ld+json" is:inline set:html={jsonLd} />
+</Base>
