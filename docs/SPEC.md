@@ -1,6 +1,6 @@
 # ひづけ堂 仕様書
 
-最終更新: 2026-07-09
+最終更新: 2026-09-06
 
 ## サイト概要
 
@@ -46,7 +46,9 @@
 - `kinenbi.astro` — 記念日計算
 - `nyugaku.astro` — 入学・卒業年の計算（学歴早見表）
 - `column/` — コラム記事
-- `about.astro` / `privacy.astro` / `contact.astro` — 運営者情報・プライバシーポリシー・お問い合わせ（Google Form）
+- `column/index.astro` — コラム一覧（テーマ別。一覧データは `src/lib/site.js` の `COLUMNS`）
+- `404.astro` — 404 ページ（`wrangler.jsonc` の `not_found_handling` で配信）
+- `about.astro` / `privacy.astro` / `contact.astro` — 運営者情報・プライバシーポリシー・お問い合わせ（メール）
 
 ## 外部サービス設定
 
@@ -63,7 +65,8 @@
 ### Google AdSense
 - パブリッシャーID: `ca-pub-7405074438692646`
 - 審査コード: `Base.astro` の `<head>` に設置済み（全ページに反映）
-- 状態: 審査申請済み（2026-07-05）。結果は数日〜2週間でメール通知
+- 状態: 初回申請（2026-07-05）は「有用性の低いコンテンツ」で不承認 → 2026-09-06 に改善して再審査リクエスト（審査待ち）
+- 経緯と対応内容の詳細: `docs/ADSENSE-REVIEW-LOG.md`
 
 ## 運用メモ
 
