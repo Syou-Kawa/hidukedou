@@ -1,0 +1,18 @@
+---
+// 記事・ツールページの執筆者と公開日・更新日
+// props: published (YYYY-MM-DD), updated (YYYY-MM-DD, 省略可)
+import { SITE } from "../lib/site.js";
+const { published, updated } = Astro.props;
+const fmt = (iso) => {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${y}年${m}月${d}日`;
+};
+const showUpdated = updated && updated !== published;
+---
+
+<p class="article-meta">
+  <span>執筆: <a href={SITE.author.url}>{SITE.author.name}</a></span>
+  {published && <span>公開: <time datetime={published}>{fmt(published)}</time></span>}
+  {showUpdated && <span>更新: <time datetime={updated}>{fmt(updated)}</time></span>}
+</p>

@@ -1,5 +1,7 @@
 ---
 import Base from "./Base.astro";
+import ArticleMeta from "../components/ArticleMeta.astro";
+import Sources from "../components/Sources.astro";
 
 // props:
 //   title / description : メタ用
@@ -7,7 +9,20 @@ import Base from "./Base.astro";
 //   keyPoints           : [string(HTML可)] … 冒頭の要点ボックス
 //   faqs                : [{ q, a }]  … FAQ表示とFAQPage構造化データの両方に使う
 //   related             : [{ href, label }]
-const { title, description, h1, lead, keyPoints = [], faqs = [], related = [] } = Astro.props;
+//   published / updated : YYYY-MM-DD … 執筆者・日付の表示に使う
+//   sources             : [{ label, href, note? }] … 参考資料・出典
+const {
+  title,
+  description,
+  h1,
+  lead,
+  keyPoints = [],
+  faqs = [],
+  related = [],
+  published,
+  updated,
+  sources = [],
+} = Astro.props;
 
 const faqJsonLd =
   faqs.length > 0
@@ -27,6 +42,7 @@ const faqJsonLd =
   <article>
     <h1>{h1}</h1>
     <p class="lead">{lead}</p>
+    <ArticleMeta published={published} updated={updated} />
 
     <slot name="calc" />
 
@@ -60,6 +76,8 @@ const faqJsonLd =
         </section>
       )
     }
+
+    <Sources sources={sources} />
 
     {
       related.length > 0 && (

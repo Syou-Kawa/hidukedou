@@ -1,6 +1,9 @@
 ---
 import ToolLayout from "../layouts/ToolLayout.astro";
 import { ROKUYO_DISPLAY, KYUREKI_RANGE, kyurekiYears } from "../lib/rokuyo.js";
+import { REFS } from "../lib/site.js";
+
+const sources = [REFS.naoKoyomi];
 
 const fromYear = KYUREKI_RANGE.from.slice(0, 4);
 const toYear = KYUREKI_RANGE.to.slice(0, 4);
@@ -56,6 +59,9 @@ const related = [
   keyPoints={keyPoints}
   faqs={faqs}
   related={related}
+  published="2026-07-09"
+  updated="2026-09-06"
+  sources={sources}
 >
   <div class="calc" slot="calc">
     <div class="row">
@@ -81,6 +87,14 @@ const related = [
   </div>
 
   <Fragment slot="explain">
+    <h2>使い方</h2>
+    <ol class="calc-steps">
+      <li>ページを開くと今日の六曜と旧暦の日付が表示されます。日付を選び直せば、その日の六曜に切り替わります。</li>
+      <li>「次の大安」の表で、今日以降の大安の日付と残り日数を確認できます。日曜・祝日は赤字なので、休日の大安を探すときに便利です。</li>
+      <li>「月ごとの六曜一覧」で月を選ぶと、その月の全日の六曜が一覧になります。</li>
+      <li>「結果のURLをコピー」で、同じ日付の六曜を相手にそのまま送れます。</li>
+    </ol>
+
     <h2>六曜の6つの意味</h2>
     <p>
       六曜（ろくよう）は、先勝→友引→先負→仏滅→大安→赤口の6つが順に繰り返す、カレンダーの暦注です。それぞれ次のような意味があるとされています。
@@ -113,6 +127,55 @@ const related = [
     <p>
       旧暦の月が変わると並びが途中で飛ぶため、今のカレンダーの上では不規則に見えますが、中身はこれだけの循環です。本ツールは選んだ日の<strong>旧暦の日付もあわせて表示</strong>するので、六曜がその余りどおりになっていることを確かめられます。なお旧暦の閏月（うるうづき）は、元の月と同じ月の数字で計算します。
     </p>
+
+    <h2>計算例 — 実際の日付で確かめる</h2>
+    <p>本ツールが表示する旧暦の日付を使って、余りの計算を追ってみます。</p>
+    <table class="milestones">
+      <tr><th>新暦</th><th>旧暦</th><th>月＋日</th><th>6で割った余り</th><th>六曜</th></tr>
+      <tr><td>2026年1月1日</td><td class="date-cell">11月13日</td><td class="date-cell">24</td><td class="date-cell">0</td><td>大安</td></tr>
+      <tr><td>2026年2月16日</td><td class="date-cell">12月29日</td><td class="date-cell">41</td><td class="date-cell">5</td><td>仏滅</td></tr>
+      <tr class="is-main"><td>2026年2月17日（旧正月）</td><td class="date-cell">1月1日</td><td class="date-cell">2</td><td class="date-cell">2</td><td>先勝</td></tr>
+      <tr><td>2026年9月10日</td><td class="date-cell">7月29日</td><td class="date-cell">36</td><td class="date-cell">0</td><td>大安</td></tr>
+      <tr class="is-main"><td>2026年9月11日</td><td class="date-cell">8月1日</td><td class="date-cell">9</td><td class="date-cell">3</td><td>友引</td></tr>
+    </table>
+    <ul>
+      <li>2026年2月16日は仏滅なので、順番どおりなら翌日は大安のはずですが、17日は旧暦の1月1日（旧正月）なので<strong>先勝にリセット</strong>されます。旧暦の元日が必ず先勝になるのはこの計算のためです。</li>
+      <li>2026年9月10日（大安）の翌日は、順番どおりなら赤口ですが、旧暦8月1日に当たるため<strong>友引に飛びます</strong>。「同じ月内では順番どおり、月が変わると飛ぶ」がカレンダー上の六曜の見た目です。</li>
+    </ul>
+
+    <h2>時間帯で吉凶が変わる日</h2>
+    <p>
+      大安と仏滅以外の4つは、<strong>時間帯によって吉凶が変わる</strong>とされています。「先勝は吉」とだけ覚えていると午後の予定でずれるので、一般にいわれる目安をまとめます。
+    </p>
+    <table class="milestones">
+      <tr><th>六曜</th><th>午前</th><th>正午前後</th><th>午後</th><th>向くとされる予定の入れ方</th></tr>
+      <tr class="is-main"><td>大安</td><td>吉</td><td>吉</td><td>吉</td><td>終日。時間を選ばない</td></tr>
+      <tr><td>先勝</td><td>吉</td><td>—</td><td>凶</td><td>午前中に済ませる</td></tr>
+      <tr><td>友引</td><td>吉</td><td>凶</td><td>吉</td><td>朝か夕方以降。昼（11時〜13時ごろ）は避ける</td></tr>
+      <tr><td>先負</td><td>凶</td><td>—</td><td>吉</td><td>午後に回す</td></tr>
+      <tr><td>赤口</td><td>凶</td><td>吉</td><td>凶</td><td>正午前後（11時〜13時ごろ）だけ</td></tr>
+      <tr><td>仏滅</td><td>凶</td><td>凶</td><td>凶</td><td>終日凶とされる。気にするなら別の日に</td></tr>
+    </table>
+    <p class="small">「午前・午後」の境目は正午とするのが一般的ですが、資料によって幅があります。気にする場合は境目ぎりぎりの時刻を避けるのが無難です。</p>
+
+    <h2>気にする場面・気にしなくてよい場面</h2>
+    <table class="milestones">
+      <tr><th>場面</th><th>一般的な扱い</th><th>ひとこと</th></tr>
+      <tr><td>結婚式・入籍</td><td>大安・友引が好まれる</td><td>親世代が気にすることが多い。両家に一言確認を（<a href="/column/nyuseki/">入籍日の決め方</a>）</td></tr>
+      <tr><td>葬儀</td><td>友引を避ける風習</td><td>火葬場が友引を休業日にしている地域があり、実務上も日程に影響する</td></tr>
+      <tr><td>四十九日などの法要</td><td>気にしない</td><td>六曜は仏教と無関係。参列しやすい休日を優先（<a href="/shijukunichi/">四十九日の計算</a>）</td></tr>
+      <tr><td>納車・引越し・開店</td><td>大安を選ぶ人もいる</td><td>本人の気持ち次第。予約が混むので日程優先でもよい</td></tr>
+      <tr><td>宝くじ・財布の新調</td><td>六曜より一粒万倍日・天赦日</td><td>六曜とは別の暦注（<a href="/column/ichiryumanbai/">一粒万倍日・天赦日とは</a>）</td></tr>
+    </table>
+
+    <h2>カレンダーによって六曜がずれることがある理由</h2>
+    <p>
+      まれに、手元のカレンダーやアプリと本ツールで六曜が違う日があります。原因のほとんどは<strong>旧暦の取り方の違い</strong>です。旧暦の各月1日は「朔（新月）」の瞬間を含む日で、その時刻は天文計算で決まります。朔の瞬間が日付の境目（深夜0時前後）に近い月は、どの時刻・どの基準で計算するかによって月の1日が1日前後し、その月全体の六曜がずれます。
+    </p>
+    <p>
+      閏月の扱いや、簡易な計算式で求めた旧暦を使っているカレンダーでも違いが出ます。本ツールは国立天文台の暦要項にもとづく旧暦を複数のカレンダーと照合して掲載しています。どうしても一致しない場合は、式場や寺社が使っているカレンダーに合わせるのが実務的です。
+    </p>
+
     <h2>対応期間とデータについて</h2>
     <p>
       対応期間は<strong>{fromYear}年〜{toYear}年</strong>です。旧暦の各月1日は「朔（さく）＝新月」の日で、天文計算により決まり、国立天文台が毎年公表する暦要項で確定します。本ツールは確定済みの旧暦データのみを掲載し、毎年更新しています。

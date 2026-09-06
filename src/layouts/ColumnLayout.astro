@@ -1,0 +1,114 @@
+---
+// コラム記事用レイアウト
+// props:
+//   title / description : メタ用
+//   h1 / lead           : 見出しとリード文（h1 省略時は title）
+//   published / updated : YYYY-MM-DD
+//   keyPoints           : [string(HTML可)] … 冒頭の要点ボックス
+//   faqs                : [{ q, a }]（任意）
+//   sources             : [{ label, href, note? }] … 参考資料
+//   related             : [{ href, label }] … 関連ツール・コラム
+import Base from "./Base.astro";
+import ArticleMeta from "../components/ArticleMeta.astro";
+import Sources from "../components/Sources.astro";
+import { SITE } from "../lib/site.js";
+
+const {
+  title,
+  description,
+  h1,
+  lead,
+  published,
+  updated,
+  keyPoints = [],
+  faqs = [],
+  sources = [],
+  related = [],
+} = Astro.props;
+
+const heading = h1 ?? title;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+
+const articleJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: heading,
+  description,
+  ...(published ? { datePublished: published } : {}),
+  ...(updated ? { dateModified: updated } : {}),
+  ...(canonical ? { mainEntityOfPage: canonical } : {}),
+  inLanguage: "ja",
+  author: { "@type": "Person", name: SITE.author.name, url: Astro.site ? new URL(SITE.author.url, Astro.site).href : SITE.author.url },
+  publisher: { "@type": "Organization", name: SITE.name },
+});
+
+const faqJsonLd =
+  faqs.length > 0
+    ? JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      })
+    : null;
+---
+
+<Base title={title} description={description} ogType="article">
+  <article>
+    <h1>{heading}</h1>
+    {lead && <p class="lead">{lead}</p>}
+    <ArticleMeta published={published} updated={updated} />
+
+    {
+      keyPoints.length > 0 && (
+        <aside class="key-points">
+          <span class="key-points-title">この記事の要点</span>
+          <ul>
+            {keyPoints.map((k) => (
+              <li set:html={k} />
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+
+    <slot />
+
+    {
+      faqs.length > 0 && (
+        <section class="faq">
+          <h2>よくある質問</h2>
+          {faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p class="faq-a" set:html={f.a} />
+            </details>
+          ))}
+        </section>
+      )
+    }
+
+    <Sources sources={sources} />
+
+    {
+      related.length > 0 && (
+        <nav class="related">
+          <h2>関連ツール・コラム</h2>
+          <ul>
+            {related.map((r) => (
+              <li>
+                <a href={r.href}>{r.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+  </article>
+
+  <script type="application/ld+json" is:inline set:html={articleJsonLd} />
+  {faqJsonLd && <script type="application/ld+json" is:inline set:html={faqJsonLd} />}
+</Base>

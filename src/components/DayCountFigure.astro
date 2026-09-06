@@ -1,0 +1,64 @@
+---
+// 「初日を含める / 含めない」の数え方を示す日付タイムライン図（SVG）
+// props:
+//   startLabel : 起点の日のラベル（例: "受領日" "命日" "7/1"）
+//   days       : 表示する日数（デフォルト 7）
+//   mode       : "include"（初日算入: 起点が1日目）| "exclude"（初日不算入: 翌日が1日目）| "both"（2段で比較）
+//   caption    : 図の下の説明文
+//   highlight  : 強調する「◯日目」（省略時は days）
+const { startLabel = "起点の日", days = 7, mode = "both", caption = "", highlight } = Astro.props;
+const hl = highlight ?? days;
+const cols = days + 1; // 起点の日 + days 日分
+const cell = 44;
+const gap = 6;
+const padX = 12;
+const width = padX * 2 + cols * cell + (cols - 1) * gap;
+const rows = mode === "both" ? ["include", "exclude"] : [mode];
+const rowH = 90;
+const height = 26 + rows.length * rowH;
+const rowTitle = (m) => (m === "include" ? "初日を含める（起点＝1日目）" : "初日を含めない（翌日＝1日目）");
+const numberFor = (m, i) => (m === "include" ? i + 1 : i);
+---
+
+<figure class="figure">
+  <svg
+    viewBox={`0 0 ${width} ${height}`}
+    role="img"
+    aria-label={`${startLabel}を起点にした日数の数え方の図。${rows.map(rowTitle).join("。")}`}
+    class="figure-svg"
+  >
+    <text x={padX} y="16" class="fig-title">{startLabel}から数えると…</text>
+    {
+      rows.map((m, r) => {
+        const top = 26 + r * rowH;
+        return (
+          <g>
+            <text x={padX} y={top + 12} class="fig-row-title">{rowTitle(m)}</text>
+            {Array.from({ length: cols }).map((_, i) => {
+              const x = padX + i * (cell + gap);
+              const n = numberFor(m, i);
+              const isStart = i === 0;
+              const isHl = n === hl;
+              const cls = isHl ? "fig-cell is-hl" : isStart ? "fig-cell is-start" : "fig-cell";
+              return (
+                <g>
+                  <rect x={x} y={top + 20} width={cell} height={cell} rx="5" class={cls} />
+                  <text x={x + cell / 2} y={top + 20 + cell / 2 + 1} text-anchor="middle" dominant-baseline="middle" class={isHl ? "fig-num is-hl" : "fig-num"}>
+                    {n === 0 ? "—" : `${n}`}
+                  </text>
+                  {isStart && (
+                    <text x={x + cell / 2} y={top + 20 + cell + 14} text-anchor="middle" class="fig-label">{startLabel}</text>
+                  )}
+                  {isHl && !isStart && (
+                    <text x={x + cell / 2} y={top + 20 + cell + 14} text-anchor="middle" class="fig-label is-hl">{`${n}日目`}</text>
+                  )}
+                </g>
+              );
+            })}
+          </g>
+        );
+      })
+    }
+  </svg>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

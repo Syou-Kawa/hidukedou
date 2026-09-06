@@ -76,6 +76,9 @@ const jsonLd = JSON.stringify({
   </p>
 
   <h2>ツール一覧</h2>
+  <p class="small">
+    すべてのツールは無料・登録不要で、入力した日付はお使いのブラウザ内だけで処理されます。祝日は内閣府の公表データ、旧暦は国立天文台の暦要項に基づき、毎年更新しています。
+  </p>
   <ul class="tool-list">
     {
       tools.map((t) => (
@@ -90,6 +93,9 @@ const jsonLd = JSON.stringify({
   </ul>
 
   <h2>日付の数え方を知る</h2>
+  <p class="small">
+    「なぜその日になるのか」を知っておくと、ツールの結果を自信を持って使えます。法律の期間計算の原則から、法要・祝日・六曜の慣習まで、日付にまつわる数え方をコラムで解説しています。
+  </p>
   <ul>
     {
       columns.map((c) => (
@@ -99,6 +105,11 @@ const jsonLd = JSON.stringify({
       ))
     }
   </ul>
+
+  <h2>{SITE.name}について</h2>
+  <p>
+    {SITE.name}は、個人が運営する日付計算の専門サイトです。計算ロジックは自動テストで検証し、記事は公的機関の一次情報を確認して執筆しています。各ページには執筆者・公開日・更新日と参考資料を明記しています。詳しくは<a href="/about/">運営者情報</a>をご覧ください。誤りのご指摘・ツールのご要望は<a href="/contact/">お問い合わせ</a>からお寄せください。
+  </p>
 
   <script type="application/ld+json" is:inline set:html={jsonLd} />
 </Base>

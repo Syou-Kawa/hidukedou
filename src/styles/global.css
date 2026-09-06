@@ -289,6 +289,53 @@ a:focus-visible, summary:focus-visible {
 .tool-list .tool-desc { font-size: 0.85rem; color: var(--muted); margin-top: 0.15rem; }
 
 .related { margin-top: 2.4rem; }
+
+/* ---------- 執筆者・日付 ---------- */
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.1rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: -0.6rem 0 1.4rem;
+}
+.article-meta a { color: var(--muted); }
+
+/* ---------- 参考資料・出典 ---------- */
+.sources { margin-top: 2.4rem; }
+.sources ul { padding-left: 1.3rem; font-size: 0.92rem; }
+.sources-note { color: var(--muted); font-size: 0.85rem; }
+
+/* ---------- 図版 ---------- */
+.figure {
+  margin: 1.4rem 0;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.9rem 0.9rem 0.6rem;
+  overflow-x: auto;
+}
+.figure-svg { display: block; width: 100%; max-width: 100%; height: auto; font-family: var(--font-body); }
+.figure figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 0.5rem; }
+.fig-title { font-size: 12px; fill: var(--ink); font-weight: 600; }
+.fig-row-title { font-size: 11px; fill: var(--muted); }
+.fig-cell { fill: var(--paper); stroke: var(--line); stroke-width: 1; }
+.fig-cell.is-start { fill: var(--ai-pale); stroke: var(--ai); }
+.fig-cell.is-hl { fill: var(--ai); stroke: var(--ai); }
+.fig-num { font-size: 14px; fill: var(--ink); font-variant-numeric: tabular-nums; }
+.fig-num.is-hl { fill: #fff; font-weight: 600; }
+.fig-label { font-size: 10px; fill: var(--muted); }
+.fig-label.is-hl { fill: var(--ai-deep); font-weight: 600; }
+.calc-steps { counter-reset: step; padding-left: 0; list-style: none; }
+.calc-steps li { position: relative; padding-left: 2rem; margin: 0.5rem 0; }
+.calc-steps li::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute; left: 0; top: 0.35rem;
+  width: 1.4rem; height: 1.4rem; border-radius: 50%;
+  background: var(--ai); color: #fff; font-size: 0.75rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
 .related ul { padding-left: 1.3rem; }
 
 /* ---------- トップへ戻るボタン ---------- */
