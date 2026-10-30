@@ -34,8 +34,9 @@ export const COLUMN_CATEGORIES = [
 ];
 export const COLUMNS = [
   { href: "/column/shonichi/", name: "「初日を含める・含めない」— 日数の数え方の基本", desc: "「7日後」と「7日目」はなぜ1日ずれる？民法の原則と身近な例外。", category: "basic", published: "2026-07-05", updated: "2026-09-06" },
-  { href: "/column/cooling-off-kigen/", name: "クーリングオフの期限の数え方 — 8日目が日曜日でも延びない？", desc: "受領日を1日目とする理由、発信主義、書面不備のときの扱い。", category: "basic", published: "2026-07-15", updated: "2026-09-06" },
-  { href: "/column/eigyobi-inai/", name: "「3営業日以内」はいつまで？営業日の数え方と見落としやすい休業日", desc: "翌営業日起算の考え方と、銀行・役所・企業で違う休業日。", category: "basic", published: "2026-07-15", updated: "2026-09-06" },
+  { href: "/column/cooling-off-kigen/", name: "クーリングオフの期限の数え方 — 8日目が日曜日でも延びない？", desc: "受領日を1日目とする理由、発信主義、書面不備のときの扱い。", category: "basic", published: "2026-07-15", updated: "2026-10-31" },
+  { href: "/column/eigyobi-inai/", name: "「3営業日以内」はいつまで？営業日の数え方と見落としやすい休業日", desc: "翌営業日起算の考え方と、銀行・役所・企業で違う休業日。", category: "basic", published: "2026-07-15", updated: "2026-10-31" },
+  { href: "/column/eigyobi-mae/", name: "「3営業日前」とはいつ？数え方と曜日別早見表、締切からの逆算", desc: "月曜日の3営業日前は前週の水曜日。曜日別早見表と、祝日・年末年始を挟む計算例。", category: "basic", published: "2026-10-31", updated: "2026-10-31" },
   { href: "/column/nenmatsu-nenshi/", name: "年末年始の営業日はいつまで？2026-27年の銀行・役所カレンダー", desc: "仕事納めは12月28日、銀行は12月30日まで。年内着金の振込期限と、年末年始にかかる期限の扱い。", category: "basic", published: "2026-10-31", updated: "2026-10-31" },
   { href: "/column/hayaumare/", name: "4月1日生まれはなぜ早生まれ？「誕生日前日に年を取る」しくみ", desc: "年齢計算の法律と学校教育法が組み合わさると、学年の境目が4月1日になる理由。", category: "basic", published: "2026-07-15", updated: "2026-09-06" },
   { href: "/column/shukujitsu/", name: "祝日はどうやって決まる？振替休日と国民の休日のしくみ", desc: "祝日法の3つのタイプ、振替休日・国民の休日の条件、春分・秋分の公示。", category: "koyomi", published: "2026-07-05", updated: "2026-09-06" },
