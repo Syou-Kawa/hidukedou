@@ -16,9 +16,9 @@ export const SITE = {
 
 // ツール一覧（トップ・コラム一覧・404・サイトマップで共用）
 export const TOOLS = [
-  { href: "/shukujitsu/", name: "祝日カレンダー", desc: "次の祝日まであと何日？年ごとの祝日一覧と連休が一目でわかる早見表。", published: "2026-07-09", updated: "2026-09-06" },
+  { href: "/shukujitsu/", name: "祝日カレンダー", desc: "次の祝日まであと何日？年ごとの祝日一覧と連休が一目でわかる早見表。", published: "2026-07-09", updated: "2026-10-31" },
   { href: "/rokuyo/", name: "六曜カレンダー（大安・仏滅）", desc: "今日の六曜は？日付から大安・仏滅を調べて、次の大安までの残り日数も一覧表示。", published: "2026-07-09", updated: "2026-09-06" },
-  { href: "/eigyobi/", name: "営業日計算", desc: "「3営業日後はいつ？」を土日祝を除いて計算。期間内の営業日数も数えられます。", published: "2026-07-05", updated: "2026-09-06" },
+  { href: "/eigyobi/", name: "営業日計算", desc: "「3営業日後はいつ？」を土日祝を除いて計算。期間内の営業日数も数えられます。", published: "2026-07-05", updated: "2026-10-31" },
   { href: "/shijukunichi/", name: "四十九日・法要日の計算", desc: "命日から初七日・四十九日・一周忌〜三十三回忌までの日程を一覧表示します。", published: "2026-07-05", updated: "2026-09-06" },
   { href: "/seigo/", name: "生後日数・お祝い日の計算", desc: "今日で生後何日・何か月？お七夜・お宮参り・百日祝いの日付も自動計算。", published: "2026-07-05", updated: "2026-09-06" },
   { href: "/cooling-off/", name: "クーリングオフ期限の計算", desc: "書面の受領日と取引の種類から、クーリングオフの期限日を計算します。", published: "2026-07-05", updated: "2026-09-06" },
@@ -36,6 +36,7 @@ export const COLUMNS = [
   { href: "/column/shonichi/", name: "「初日を含める・含めない」— 日数の数え方の基本", desc: "「7日後」と「7日目」はなぜ1日ずれる？民法の原則と身近な例外。", category: "basic", published: "2026-07-05", updated: "2026-09-06" },
   { href: "/column/cooling-off-kigen/", name: "クーリングオフの期限の数え方 — 8日目が日曜日でも延びない？", desc: "受領日を1日目とする理由、発信主義、書面不備のときの扱い。", category: "basic", published: "2026-07-15", updated: "2026-09-06" },
   { href: "/column/eigyobi-inai/", name: "「3営業日以内」はいつまで？営業日の数え方と見落としやすい休業日", desc: "翌営業日起算の考え方と、銀行・役所・企業で違う休業日。", category: "basic", published: "2026-07-15", updated: "2026-09-06" },
+  { href: "/column/nenmatsu-nenshi/", name: "年末年始の営業日はいつまで？2026-27年の銀行・役所カレンダー", desc: "仕事納めは12月28日、銀行は12月30日まで。年内着金の振込期限と、年末年始にかかる期限の扱い。", category: "basic", published: "2026-10-31", updated: "2026-10-31" },
   { href: "/column/hayaumare/", name: "4月1日生まれはなぜ早生まれ？「誕生日前日に年を取る」しくみ", desc: "年齢計算の法律と学校教育法が組み合わさると、学年の境目が4月1日になる理由。", category: "basic", published: "2026-07-15", updated: "2026-09-06" },
   { href: "/column/shukujitsu/", name: "祝日はどうやって決まる？振替休日と国民の休日のしくみ", desc: "祝日法の3つのタイプ、振替休日・国民の休日の条件、春分・秋分の公示。", category: "koyomi", published: "2026-07-05", updated: "2026-09-06" },
   { href: "/column/rokuyo/", name: "六曜とは？大安・仏滅・友引の意味と、気にしなくてよい場面", desc: "旧暦から六曜が決まるしくみ、時間帯で変わる吉凶、場面別の付き合い方。", category: "koyomi", published: "2026-07-05", updated: "2026-09-06" },
@@ -52,7 +53,7 @@ export const COLUMNS = [
 export const STATIC_PAGES = [
   { href: "/", published: "2026-07-05", updated: "2026-09-06" },
   { href: "/column/", published: "2026-09-06", updated: "2026-09-06" },
-  { href: "/about/", published: "2026-07-05", updated: "2026-09-06" },
+  { href: "/about/", published: "2026-07-05", updated: "2026-10-31" },
   { href: "/privacy/", published: "2026-07-05", updated: "2026-09-06" },
   { href: "/contact/", published: "2026-07-05", updated: "2026-09-06" },
 ];
@@ -122,5 +123,15 @@ export const REFS = {
     label: "銀行法（e-Gov 法令検索）",
     href: "https://laws.e-gov.go.jp/law/356AC0000000059",
     note: "第15条（休日）",
+  },
+  ntaKigen: {
+    label: "国税庁 国税通則法基本通達 第3節「期間及び期限」",
+    href: "https://www.nta.go.jp/law/tsutatsu/kihon/tsusoku/01/03/10.htm",
+    note: "第10条第2項関係。期限が土日祝・12月29日〜1月3日に当たる場合の取扱い",
+  },
+  jpxCalendar: {
+    label: "日本取引所グループ「営業時間・休業日」",
+    href: "https://www.jpx.co.jp/corporate/about-jpx/calendar/index.html",
+    note: "証券取引所の休業日一覧（年末年始は12月31日〜1月3日）",
   },
 };

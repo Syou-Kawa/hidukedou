@@ -1,14 +1,16 @@
 ---
 import ToolLayout from "../layouts/ToolLayout.astro";
-import { HOLIDAY_RANGE, holidayYears } from "../lib/dateCore.js";
+import { HOLIDAY_RANGE, PREDICT_RANGE, holidayYears, isPredictedYear } from "../lib/dateCore.js";
 import holidayData from "../lib/holidays.js";
 import { REFS } from "../lib/site.js";
 
 const sources = [REFS.shukujitsuHo, REFS.caoShukujitsu, REFS.naoKoyomi];
 
-const years = holidayYears();
+const years = holidayYears(); // 公式＋予測
 const fromYear = HOLIDAY_RANGE.from.slice(0, 4);
-const toYear = HOLIDAY_RANGE.to.slice(0, 4);
+const toYear = HOLIDAY_RANGE.to.slice(0, 4); // 公式データの最終年
+const predictFrom = PREDICT_RANGE.from.slice(0, 4);
+const predictTo = PREDICT_RANGE.to.slice(0, 4);
 
 // 祝日名 → { imi: 祝日法に定める趣旨, yurai: 日付の由来・補足 }
 // 一覧の祝日名クリックでここに遷移する（idは "hd-祝日名"）
@@ -106,7 +108,11 @@ const HOLIDAY_GUIDE = [
 ];
 
 // データに実際に登場する祝日だけ解説を載せる（年次更新で祝日が変わっても不整合にならないように）
-const namesInData = new Set(holidayData.holidays.map((h) => h.name));
+const namesInData = new Set([
+  ...holidayData.holidays.map((h) => h.name),
+  "振替休日",
+  "国民の休日",
+]);
 const guide = HOLIDAY_GUIDE.filter((g) => namesInData.has(g.name));
 
 const faqs = [
@@ -120,7 +126,11 @@ const faqs = [
   },
   {
     q: "何年分の祝日に対応していますか？",
-    a: `${fromYear}年〜${toYear}年に対応しています。祝日は「国民の祝日に関する法律」で定められ、春分の日・秋分の日は前年2月の官報公示で正式に確定します。そのため本ツールは確定済みの範囲のみを掲載し、毎年内閣府の公表データをもとに更新しています。`,
+    a: `内閣府の公表データに基づく確定分が${fromYear}年〜${toYear}年、祝日法の規定から算出した予測分が${predictFrom}年〜${predictTo}年です。春分の日・秋分の日は前年2月の官報公示で正式に確定するため、予測年の一覧には「予測」の表示を付けています。公示後に確定データへ置き換えて更新しています。`,
+  },
+  {
+    q: "「予測」の祝日はどのくらい当たりますか？",
+    a: "日付固定の祝日とハッピーマンデーは法律で決まっているため、法改正がない限り確定値と同じです。春分の日・秋分の日は天文計算の近似式で求めており、2000年以降の公示値とはすべて一致しています。ただし正式には官報公示で確定するものなので、予測年の日付で重要な予定を組む場合は、公示後に改めてご確認ください。",
   },
   {
     q: "振替休日や国民の休日も含まれますか？",
@@ -143,14 +153,14 @@ const related = [
 
 <ToolLayout
   title="祝日カレンダー — 次の祝日はいつ？連休が一目でわかる祝日一覧"
-  description={`今日を基準に「次の祝日」までの残り日数を表示。${fromYear}年〜${toYear}年の国民の祝日を年ごとに一覧化し、3連休以上の連休にも目印をつけます。振替休日・国民の休日にも対応。`}
+  description={`今日を基準に「次の祝日」までの残り日数を表示。${fromYear}年〜${predictTo}年の国民の祝日を年ごとに一覧化し、3連休以上の連休にも目印をつけます。振替休日・国民の休日にも対応。${predictFrom}年以降は祝日法に基づく予測。`}
   h1="祝日カレンダー"
   lead="今日から見た「次の祝日」と、その年の祝日一覧をまとめて表示します。連休も一目で把握できます。"
   keyPoints={keyPoints}
   faqs={faqs}
   related={related}
   published="2026-07-09"
-  updated="2026-09-06"
+  updated="2026-10-31"
   sources={sources}
 >
   <div class="calc" slot="calc">
@@ -159,7 +169,7 @@ const related = [
       <div>
         <label for="year-select">年を選ぶ</label>
         <select id="year-select">
-          {years.map((y) => <option value={y}>{y}年</option>)}
+          {years.map((y) => <option value={y}>{y}年{isPredictedYear(y) ? "（予測）" : ""}</option>)}
         </select>
       </div>
     </div>
@@ -186,7 +196,15 @@ const related = [
 
     <h2>春分の日・秋分の日は前年に確定します</h2>
     <p>
-      春分の日・秋分の日は天文計算で決まり、国立天文台が<strong>前年2月に官報で公示</strong>して正式に確定します。本ツールが確定済みの年だけを掲載し、未確定の年を推定で載せないのはこのためです。しくみの詳細は<a href="/column/shukujitsu/">コラム</a>をご覧ください。
+      春分の日・秋分の日は天文計算で決まり、国立天文台が<strong>前年2月に官報で公示</strong>して正式に確定します。本ツールでは、公示済みの{fromYear}年〜{toYear}年を内閣府の公表データどおりに掲載し、その先の{predictFrom}年〜{predictTo}年は祝日法の規定と天文計算の近似式から算出した<strong>予測値</strong>として、年の選択肢と一覧に「予測」と表示しています。しくみの詳細は<a href="/column/shukujitsu/">コラム</a>をご覧ください。
+    </p>
+
+    <h2>予測年の祝日はどう計算しているか</h2>
+    <p>
+      祝日は3タイプとも、法律に書かれた規則で機械的に求められます。日付固定の祝日はそのまま、ハッピーマンデーは「その月の第◯月曜日」を暦から探し、春分の日・秋分の日は太陽の黄経から導いた近似式（2000年以降の公示値とすべて一致）で求めます。そのうえで、祝日が日曜日に当たれば「その日後の最も近い祝日でない日」を振替休日に、祝日に挟まれた平日を国民の休日にする、という祝日法第3条の規定を適用します。この計算を公示済みの{fromYear}年〜{toYear}年に当てはめると内閣府のデータと1件残らず一致することを自動テストで確認したうえで、{predictFrom}年以降に使っています。
+    </p>
+    <p>
+      予測が外れる可能性があるのは、法改正で祝日が追加・移動した場合（2020年のオリンピック特例のような例）と、春分・秋分の近似式が公示値と1日ずれた場合です。後者は21世紀中はほぼ起きない見込みですが、いずれも公示後に確定データへ差し替えます。
     </p>
 
     <h2>連休の目印について</h2>
@@ -229,7 +247,7 @@ const related = [
     }
     <h2>祝日データの出典と更新方針</h2>
     <p>
-      祝日データは内閣府が公表している「国民の祝日」の一覧（下記の出典）をもとに作成し、振替休日・国民の休日も同じ資料に沿って収録しています。掲載範囲は<strong>{fromYear}年〜{toYear}年</strong>で、春分の日・秋分の日が官報で公示された時点で1年分ずつ追加します。祝日法の改正や特例（オリンピック開催年に海の日などが移動した例があります）も公布後に反映し、未確定の年を推定で掲載することはしていません。
+      確定分の祝日データは内閣府が公表している「国民の祝日」の一覧（下記の出典）をもとに作成し、振替休日・国民の休日も同じ資料に沿って収録しています。確定分の掲載範囲は<strong>{fromYear}年〜{toYear}年</strong>で、春分の日・秋分の日が官報で公示された時点で1年分ずつ確定データに置き換え、予測分も1年先へ延ばします。祝日法の改正や特例（オリンピック開催年に海の日などが移動した例があります）も公布後に反映します。予測分は「予測」と明示し、確定分と区別して表示しています。
     </p>
   </Fragment>
 </ToolLayout>
@@ -263,9 +281,10 @@ const related = [
     }
     const days = diffDays(today, next.date, false);
     const when = days === 0 ? "今日" : `あと${days}日`;
+    const pred = next.predicted ? "（予測）" : "";
     nextEl.innerHTML = `<p class="result-caption">次の祝日</p>
       <div class="result-big">${when}</div>
-      <p class="result-caption">${formatJa(next.date)}・${next.name}</p>`;
+      <p class="result-caption">${formatJa(next.date)}・${next.name}${pred}</p>`;
   }
 
   function renderYear(year) {
@@ -293,10 +312,14 @@ const related = [
         </tr>`;
       })
       .join("");
+    const predicted = items.some((it) => it.predicted);
+    const note = predicted
+      ? `<p class="result-note">※ ${year}年の祝日は官報公示前のため、祝日法の規定から算出した<strong>予測値</strong>です。春分の日・秋分の日は前年2月の公示で確定します。</p>`
+      : "";
     listEl.innerHTML = `<table class="milestones">
       <thead><tr><th>日付</th><th>祝日</th><th>残り</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>`;
+    </table>${note}`;
   }
 
   // 今日以降で最初の祝日（強調表示用）。全期間から探す。

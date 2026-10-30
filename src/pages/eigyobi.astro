@@ -59,7 +59,7 @@ const related = [
   faqs={faqs}
   related={related}
   published="2026-07-05"
-  updated="2026-09-06"
+  updated="2026-10-31"
   sources={sources}
 >
   <div class="calc" slot="calc">
@@ -168,7 +168,7 @@ const related = [
       <li><strong>期限から逆算して着手日を決めたい</strong> — 方向を「営業日前」にして計算します。たとえば10営業日の作業を月末納期に間に合わせたいなら、納期を起算日に「10営業日前」を求めると、遅くとも着手すべき日が分かります。</li>
       <li><strong>「◯日から◯日まで」の営業日数を数えたい</strong> — 「期間内の営業日数を数える」モードで「開始日を含める」を選びます。たとえば2026年7月1日（水）から7月31日（金）までなら、土日8日と海の日（20日）を除いて22営業日です。勤務日数や納期までの実働日数の見積もりに使えます。</li>
       <li><strong>銀行振込の着金日や、お盆時期の発送日を見積もりたい</strong> — 本ツールの結果に加えて、振込の受付締め時刻（15時前後）や、祝日ではないお盆休みの影響を考える必要があります。具体的な見方は<a href="/column/eigyobi-inai/">コラム</a>で解説しています。</li>
-      <li><strong>2028年以降の日付を計算したい</strong> — 本ツールの祝日データは2025〜2027年分のため、それより先は祝日を除外できません。結果に注記が表示された場合は、土日のみ除外した参考値としてお使いください。</li>
+      <li><strong>2028年以降の日付を計算したい</strong> — 内閣府が公表済みの祝日データは2025〜2027年分ですが、2028〜2030年は祝日法の規定から算出した予測の祝日を使って計算します（結果に「予測」の注記が付きます）。春分の日・秋分の日は前年2月の官報公示で確定するので、公示後に改めてご確認ください。2031年以降と2024年以前は祝日を除外できないため、土日のみ除外した参考値になります。</li>
     </ul>
     <h2>なぜ「当日を数えない」のか</h2>
     <p>
@@ -176,13 +176,13 @@ const related = [
     </p>
     <h2>祝日データについて</h2>
     <p>
-      本ツールは内閣府が公表している「国民の祝日」の情報（2025年〜2027年分）に基づいて計算しています。それより先の日付では祝日を考慮できないため、結果に注記を表示します。祝日の仕組み（振替休日・国民の休日）について詳しくは<a href="/column/shukujitsu/">コラム「祝日はどうやって決まる？」</a>をご覧ください。
+      本ツールは内閣府が公表している「国民の祝日」の情報（2025年〜2027年分）に基づいて計算しています。それより先の2028年〜2030年は、祝日法の規定（日付固定・ハッピーマンデー・春分秋分の天文計算・振替休日・国民の休日）から算出した予測の祝日を使い、結果にその旨の注記を表示します。予測の計算方法は<a href="/shukujitsu/">祝日カレンダー</a>で説明しています。祝日の仕組み（振替休日・国民の休日）について詳しくは<a href="/column/shukujitsu/">コラム「祝日はどうやって決まる？」</a>をご覧ください。
     </p>
   </Fragment>
 </ToolLayout>
 
 <script>
-  import { parseYmd, addBusinessDays, countBusinessDays, formatJa, toYmd, inHolidayRange } from "../lib/dateCore.js";
+  import { parseYmd, addBusinessDays, countBusinessDays, formatJa, toYmd, holidayStatus } from "../lib/dateCore.js";
   import { himekuriHTML, shareButtonHTML, bindShareButtons, getParam, setParams, todayYmd } from "../lib/ui.js";
 
   const $ = (id) => document.getElementById(id);
@@ -200,9 +200,14 @@ const related = [
   );
 
   function rangeNote(...dates) {
-    return dates.every((d) => inHolidayRange(d))
-      ? ""
-      : `<p class="result-note">※ 祝日データの範囲（2025〜2027年）外の日付を含むため、範囲外の祝日は考慮されていません。</p>`;
+    const statuses = dates.map((d) => holidayStatus(d));
+    if (statuses.includes("none")) {
+      return `<p class="result-note">※ 祝日データの範囲（2025〜2030年）外の日付を含むため、範囲外の祝日は考慮されていません。</p>`;
+    }
+    if (statuses.includes("predicted")) {
+      return `<p class="result-note">※ 2028年以降の祝日は官報公示前のため、祝日法の規定から算出した<strong>予測値</strong>で計算しています。</p>`;
+    }
+    return "";
   }
 
   function runAdd() {

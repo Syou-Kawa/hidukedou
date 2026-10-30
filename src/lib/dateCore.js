@@ -3,6 +3,7 @@
 // Date は必ず new Date(y, m-1, d) で生成し、toISOString は使わない）。
 
 import holidayData from "./holidays.js";
+import { computeHolidays } from "./holidayRules.js";
 
 export const WEEKDAYS_JA = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -82,18 +83,41 @@ export function nthDayCountingFirst(date, n) {
 }
 
 // ---------- 祝日・営業日 ----------
+//
+// 祝日は2段構え。
+//  1. 公式データ（holidays.js）: 内閣府の公表データ。HOLIDAY_RANGE の範囲。
+//  2. 予測データ（holidayRules.js）: 祝日法の規定から算出。公式範囲の翌年から PREDICT_YEARS 年分。
+//     春分・秋分は官報公示前のため「予測」として扱い、利用側で注記を出す。
+// 公式範囲より前の年は、改元やオリンピック特例があり現行ルールでは再現できないので対象外。
 
-const holidaySet = new Set(holidayData.holidays.map((h) => h.date));
 export const HOLIDAY_RANGE = holidayData.range; // { from: "2025-01-01", to: "2027-12-31" }
+const OFFICIAL_FROM_YEAR = Number(HOLIDAY_RANGE.from.slice(0, 4));
+const OFFICIAL_TO_YEAR = Number(HOLIDAY_RANGE.to.slice(0, 4));
+/** 公式データの翌年から何年分を予測として扱うか */
+export const PREDICT_YEARS = 3;
+export const PREDICT_RANGE = {
+  from: `${OFFICIAL_TO_YEAR + 1}-01-01`,
+  to: `${OFFICIAL_TO_YEAR + PREDICT_YEARS}-12-31`,
+};
 
-/** 祝日名を返す（祝日でなければ null） */
+// 年 → [{ date: "YYYY-MM-DD", name, predicted }]（公式＋予測を一本化したテーブル）
+const holidayTable = (() => {
+  const rows = holidayData.holidays.map((h) => ({ ...h, predicted: false }));
+  for (let y = OFFICIAL_TO_YEAR + 1; y <= OFFICIAL_TO_YEAR + PREDICT_YEARS; y++) {
+    for (const h of computeHolidays(y)) rows.push({ ...h, predicted: true });
+  }
+  return rows.sort((a, b) => a.date.localeCompare(b.date));
+})();
+const holidayMap = new Map(holidayTable.map((h) => [h.date, h]));
+
+/** 祝日名を返す（祝日でなければ null）。予測年の祝日も返す */
 export function holidayName(date) {
-  const hit = holidayData.holidays.find((h) => h.date === toYmd(date));
+  const hit = holidayMap.get(toYmd(date));
   return hit ? hit.name : null;
 }
 
 export function isHoliday(date) {
-  return holidaySet.has(toYmd(date));
+  return holidayMap.has(toYmd(date));
 }
 
 export function isWeekend(date) {
@@ -101,39 +125,64 @@ export function isWeekend(date) {
   return w === 0 || w === 6;
 }
 
-/** 営業日（土日祝以外）かどうか */
-export function isBusinessDay(date) {
-  return !isWeekend(date) && !isHoliday(date);
-}
-
-/** 祝日データの範囲内かどうか（範囲外の計算には注意書きを出す用途） */
+/** 公式の祝日データの範囲内かどうか */
 export function inHolidayRange(date) {
   const ymd = toYmd(date);
   return ymd >= HOLIDAY_RANGE.from && ymd <= HOLIDAY_RANGE.to;
 }
 
-/** 祝日データがカバーする年の配列（例: [2025, 2026, 2027]） */
-export function holidayYears() {
-  const from = Number(HOLIDAY_RANGE.from.slice(0, 4));
-  const to = Number(HOLIDAY_RANGE.to.slice(0, 4));
+/** 予測データの範囲内かどうか */
+export function inPredictedRange(date) {
+  const ymd = toYmd(date);
+  return ymd >= PREDICT_RANGE.from && ymd <= PREDICT_RANGE.to;
+}
+
+/**
+ * その日付の祝日データの状態。
+ *  "official"  公式データあり
+ *  "predicted" 祝日法から算出した予測（公示前）
+ *  "none"      祝日を考慮できない（範囲外）
+ */
+export function holidayStatus(date) {
+  if (inHolidayRange(date)) return "official";
+  if (inPredictedRange(date)) return "predicted";
+  return "none";
+}
+
+/** 年が予測データの年かどうか */
+export function isPredictedYear(year) {
+  return year > OFFICIAL_TO_YEAR && year <= OFFICIAL_TO_YEAR + PREDICT_YEARS;
+}
+
+/** 営業日（土日祝以外）かどうか */
+export function isBusinessDay(date) {
+  return !isWeekend(date) && !isHoliday(date);
+}
+
+/**
+ * 祝日データがカバーする年の配列。公式＋予測（例: [2025, 2026, 2027, 2028, 2029, 2030]）。
+ * includePredicted=false なら公式データの年だけ。
+ */
+export function holidayYears(includePredicted = true) {
+  const to = includePredicted ? OFFICIAL_TO_YEAR + PREDICT_YEARS : OFFICIAL_TO_YEAR;
   const years = [];
-  for (let y = from; y <= to; y++) years.push(y);
+  for (let y = OFFICIAL_FROM_YEAR; y <= to; y++) years.push(y);
   return years;
 }
 
-/** 指定年の祝日一覧 [{ date: Date, name }]（振替休日・国民の休日を含む・日付順） */
+/** 指定年の祝日一覧 [{ date: Date, name, predicted }]（振替休日・国民の休日を含む・日付順） */
 export function holidaysInYear(year) {
   const prefix = `${year}-`;
-  return holidayData.holidays
+  return holidayTable
     .filter((h) => h.date.startsWith(prefix))
-    .map((h) => ({ date: parseYmd(h.date), name: h.name }));
+    .map((h) => ({ date: parseYmd(h.date), name: h.name, predicted: h.predicted }));
 }
 
-/** 基準日「以降」で最初にくる祝日 { date: Date, name }。範囲内になければ null */
+/** 基準日「以降」で最初にくる祝日 { date: Date, name, predicted }。範囲内になければ null */
 export function nextHoliday(from) {
   const fromYmd = toYmd(from);
-  const hit = holidayData.holidays.find((h) => h.date >= fromYmd);
-  return hit ? { date: parseYmd(hit.date), name: hit.name } : null;
+  const hit = holidayTable.find((h) => h.date >= fromYmd);
+  return hit ? { date: parseYmd(hit.date), name: hit.name, predicted: hit.predicted } : null;
 }
 
 /**

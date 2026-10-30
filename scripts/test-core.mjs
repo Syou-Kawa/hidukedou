@@ -3,7 +3,10 @@ import {
   diffDays, nthDayCountingFirst, isBusinessDay, addBusinessDays,
   countBusinessDays, memorialServices, babyAge, babyEvents,
   coolingOffDeadline, anniversaryMilestones, holidayName,
+  holidayStatus, holidayYears, holidaysInYear, nextHoliday, inPredictedRange,
 } from "../src/lib/dateCore.js";
+import holidayData from "../src/lib/holidays.js";
+import { computeHolidays, vernalEquinoxDay, autumnalEquinoxDay } from "../src/lib/holidayRules.js";
 import { kyureki, rokuyo, formatKyureki, nextRokuyoDays } from "../src/lib/rokuyo.js";
 
 let pass = 0, fail = 0;
@@ -78,6 +81,42 @@ const ann = anniversaryMilestones(parseYmd("2025-01-01"));
 eq(find(ann, "100日目"), "2025-04-10", "100日目=+99");
 eq(find(ann, "1周年"), "2026-01-01", "1周年");
 eq(find(ann, "1000日目"), "2027-09-27", "1000日目=+999");
+
+// --- 祝日法ベースの算出（holidayRules.js） ---
+// 公式データ（内閣府）のある年は、規則計算が1件残らず一致すること
+for (const y of [2025, 2026, 2027]) {
+  const official = holidayData.holidays.filter((h) => h.date.startsWith(`${y}-`)).map((h) => `${h.date} ${h.name}`).join("|");
+  const computed = computeHolidays(y).map((h) => `${h.date} ${h.name}`).join("|");
+  eq(computed, official, `規則計算が内閣府データと一致 ${y}年`);
+}
+// 春分・秋分の近似式（国立天文台の公示値と照合）
+eq(vernalEquinoxDay(2024), 20, "春分 2024");
+eq(autumnalEquinoxDay(2024), 22, "秋分 2024");
+eq(vernalEquinoxDay(2027), 21, "春分 2027");
+eq(autumnalEquinoxDay(2028), 22, "秋分 2028（予測）");
+// 予測年の振替休日・国民の休日
+const h2029 = Object.fromEntries(computeHolidays(2029).map((h) => [h.date, h.name]));
+eq(h2029["2029-02-12"], "振替休日", "2029 建国記念の日(日)→翌月曜が振替");
+eq(h2029["2029-09-24"], "振替休日", "2029 秋分の日(日)→振替");
+const h2030 = Object.fromEntries(computeHolidays(2030).map((h) => [h.date, h.name]));
+eq(h2030["2030-05-06"], "振替休日", "2030 5/5(日)→5/6振替");
+eq(h2030["2030-11-04"], "振替休日", "2030 文化の日(日)→振替");
+eq(h2030["2030-09-22"], undefined, "2030 敬老の日(16日)と秋分(23日)は離れており国民の休日なし");
+// dateCore 側のフォールバック
+eq(holidayStatus(parseYmd("2027-12-31")), "official", "公式範囲の末日");
+eq(holidayStatus(parseYmd("2028-01-01")), "predicted", "予測範囲の初日");
+eq(holidayStatus(parseYmd("2031-01-01")), "none", "予測範囲より後");
+eq(holidayStatus(parseYmd("2024-12-31")), "none", "公式範囲より前");
+eq(inPredictedRange(parseYmd("2029-06-01")), true, "inPredictedRange");
+eq(holidayYears().join(","), "2025,2026,2027,2028,2029,2030", "年一覧（公式＋予測3年）");
+eq(holidayYears(false).join(","), "2025,2026,2027", "年一覧（公式のみ）");
+eq(holidaysInYear(2028).length, 16, "2028年の祝日件数（振替・国民の休日なし）");
+eq(holidaysInYear(2028)[0].predicted, true, "予測年のpredictedフラグ");
+eq(holidaysInYear(2026)[0].predicted, false, "公式年のpredictedフラグ");
+eq(isBusinessDay(parseYmd("2028-09-22")), false, "予測年の秋分の日は非営業日");
+eq(addBusinessDays(parseYmd("2028-09-21"), 1), "2028-09-25", "予測年の祝日をまたぐ営業日計算");
+eq(nextHoliday(parseYmd("2027-12-01")).name, "元日", "公式範囲末から予測範囲の元日へ");
+eq(nextHoliday(parseYmd("2027-12-01")).predicted, true, "次の祝日が予測であることを示す");
 
 // --- 六曜・旧暦（市販の旧暦カレンダーと照合済みの値） ---
 const k1 = kyureki(parseYmd("2026-01-01"));
